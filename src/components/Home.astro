@@ -1,0 +1,68 @@
+---
+const tracks = [
+  { no: 'A1', title: '365 Days of Light and Dark', role: 'Music, design, front end, data', state: 'Read the notes', href: '/work/365', flood: '#1a1c2e', preview: '/media/cover-4.jpg' },
+  { no: 'A2', title: 'PIM : th3v4ult', role: 'Game design, rhythm engine, backend', state: 'Notes in press' },
+  { no: 'A3', title: 'The Pipeline', role: 'Audio analysis, lyric video automation', state: 'Notes in press' },
+  { no: 'B1', title: 'The Catalogue', role: '365 daily releases and their sleeves', state: 'Notes in press' },
+];
+---
+<section class="hero">
+  <div class="hero-fallback" aria-hidden="true"></div>
+  <canvas class="hero-canvas" aria-hidden="true"></canvas>
+
+  <div class="hero-top">
+    <p class="label" data-tick>Liner notes / Side A / 2026</p>
+    <ul class="hero-meta label">
+      <li data-tick="1">Creative technologist</li>
+      <li data-tick="2">Tucson, Arizona</li>
+      <li data-tick="3">Independent since 2018</li>
+    </ul>
+  </div>
+
+  <h1 class="name" aria-label="Bryan Meason, also known as th3scr1b3" tabindex="0" role="button">
+    <span class="name-line" data-a="Bryan" data-b="th3" aria-hidden="true">Bryan</span>
+    <span class="name-line" data-a="Meason" data-b="scr1b3" aria-hidden="true">Meason</span>
+  </h1>
+  <p class="aka label"><span>a.k.a.</span><span data-aka data-a="th3scr1b3" data-b="Bryan Meason">th3scr1b3</span></p>
+
+  <div class="hero-bottom">
+    <p class="hero-line" data-write="3">I write the songs, then build the machines that play them.</p>
+    <p class="hero-cue label">Scroll for side A. Turn the sound on to set the tempo.</p>
+  </div>
+</section>
+
+<section class="section note">
+  <p class="label" data-tick>Note 01</p>
+  <p class="note-body" data-write>
+    A creative technologist who ships whole worlds alone: the <span class="mark">music</span>, the interface, the game, and the pipeline behind them.
+  </p>
+</section>
+
+<section class="section" id="work">
+  <div class="section-head">
+    <p class="label">Track list</p>
+    <p class="label">Selected work</p>
+  </div>
+  <ol class="tracks">
+    {tracks.map((t) => (
+      <li>
+        {t.href ? (
+          <a class="track" href={t.href} data-flood={t.flood} data-preview={t.preview}>
+            <span class="track-no label">{t.no}</span>
+            <span class="track-title">{t.title}</span>
+            <span class="track-role">{t.role}</span>
+            <span class="track-state"><span class="mark">{t.state}</span></span>
+          </a>
+        ) : (
+          <div class="track" aria-disabled="true">
+            <span class="track-no label">{t.no}</span>
+            <span class="track-title">{t.title}</span>
+            <span class="track-role">{t.role}</span>
+            <span class="track-state label">{t.state}</span>
+          </div>
+        )}
+      </li>
+    ))}
+  </ol>
+  <figure class="preview" aria-hidden="true"><img alt="" /></figure>
+</section>

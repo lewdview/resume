@@ -1,0 +1,93 @@
+---
+const sleeves = [
+  { src: '/media/cover-1.jpg', day: '001', title: "We're Going Crazy World" },
+  { src: '/media/cover-2.jpg', day: '003', title: 'You Like Steve Earle' },
+  { src: '/media/cover-3.jpg', day: '007', title: 'Devour' },
+  { src: '/media/cover-4.jpg', day: '008', title: 'Poetry' },
+  { src: '/media/cover-5.jpg', day: '010', title: 'Long Haul' },
+  { src: '/media/cover-6.jpg', day: '011', title: 'Getting Better' },
+];
+const built = [
+  { h: 'A player that never stops', p: 'Audio persists across every route, so moving between days never cuts the song.' },
+  { h: 'A visualizer that listens', p: 'A 3D scene built with Three.js and React Three Fiber that reacts to the track as it plays.' },
+  { h: 'Lyrics in time', p: 'Each song carries word-level timing, so the lyrics light up karaoke style as they are sung.' },
+  { h: 'A map of the mood', p: 'Every release is tagged light or dark and analysed for tempo, key and energy, then plotted so the year reads as a shape.' },
+  { h: 'A theme engine', p: 'The palette is a set of CSS variables rewritten at runtime, so the whole site can change colour without a reload.' },
+  { h: 'A site that survives its backend', p: 'Supabase is the primary data source. If it is unreachable, a static manifest takes over and the music keeps playing.' },
+];
+---
+<header class="cs-head">
+  <p class="label" data-tick>Side A / Track 1 / Case study</p>
+  <h1 class="cs-title" data-write>365 Days of <em>Light</em> and Dark</h1>
+  <dl class="cs-meta" data-rise>
+    <div><dt class="label">Role</dt><dd>Songwriter, producer, designer, developer</dd></div>
+    <div><dt class="label">Year</dt><dd>2026, January 1 to December 31</dd></div>
+    <div><dt class="label">Stack</dt><dd>React 19, Three.js, GSAP, Framer Motion, Supabase, Vercel</dd></div>
+    <div><dt class="label">Live</dt><dd><a href="https://th3scr1b3.art" target="_blank" rel="noopener">th3scr1b3.art</a></dd></div>
+  </dl>
+</header>
+
+<section class="section note">
+  <p class="label" data-tick>The brief</p>
+  <p class="note-body" data-write>One song a day for a year, and one place to hear all of them. I set the brief, wrote the songs, and built the place.</p>
+</section>
+
+<section class="wrap">
+  <div class="stats">
+    <div class="stat"><p class="stat-n" data-count="365">365</p><p class="label">Songs released</p></div>
+    <div class="stat"><p class="stat-n" data-count="233">233</p><p class="label">Dark</p></div>
+    <div class="stat"><p class="stat-n" data-count="132">132</p><p class="label">Light</p></div>
+    <div class="stat"><p class="stat-n" data-count="1">1</p><p class="label">Person</p></div>
+  </div>
+</section>
+
+<section class="crate" aria-label="Sleeves from the first two weeks">
+  <div class="crate-track">
+    <div class="crate-intro">
+      <p class="label">The crate</p>
+      <h2>Every day got its own sleeve.</h2>
+      <p>Six from the first two weeks of January. Keep scrolling to flip through them.</p>
+    </div>
+    {sleeves.map((s) => (
+      <figure class="sleeve">
+        <img src={s.src} alt={`Record sleeve for ${s.title}, day ${s.day}`} loading="lazy" width="1000" height="545" />
+        <figcaption><span>Day {s.day}</span><span>{s.title}</span></figcaption>
+      </figure>
+    ))}
+  </div>
+  <div class="crate-bar" aria-hidden="true"><i></i></div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <p class="label">What I built</p>
+    <p class="label">Six parts</p>
+  </div>
+  <ol class="built">
+    {built.map((b, i) => (
+      <li>
+        <span class="no label">0{i + 1}</span>
+        <h3 data-write>{b.h}</h3>
+        <p>{b.p}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="section-head">
+    <p class="label">How a song gets here</p>
+    <p class="label">The pipeline</p>
+  </div>
+  <ol class="flow" data-rise>
+    <li><span class="label">01</span><b>Analyse</b>Song Analyzer transcribes the track and extracts tempo, key, mood and timed lyrics.</li>
+    <li><span class="label">02</span><b>Dress</b>365 Poster generates the lyric poster and lyric video for the day.</li>
+    <li><span class="label">03</span><b>Manifest</b>One release manifest records the order, audio and sleeve for all 365 days.</li>
+    <li><span class="label">04</span><b>Publish</b>The same manifest feeds the main site, the Base mini app and the PIM rhythm game.</li>
+  </ol>
+</section>
+
+<a class="next" href="/" data-flood="#f2efe6">
+  <span class="label">Back to the sleeve</span>
+  <span class="serif">Bryan Meason</span>
+</a>
