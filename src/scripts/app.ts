@@ -12,6 +12,10 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
 
 let lenis: Lenis | null = null;
 let cleanups: Array<() => void> = [];
+// Listeners on a view's own elements die with the view: in the single-document preview the
+// same elements are mounted again on every visit, so they must not stack.
+let life = new AbortController();
+const scoped = () => ({ signal: life.signal });
 let scope: ParentNode = document;
 const qa = <T extends Element = HTMLElement>(sel: string) => scope.querySelectorAll<T>(sel);
 const q = <T extends Element = HTMLElement>(sel: string) => scope.querySelector<T>(sel);
@@ -132,13 +136,13 @@ function initName() {
     flip();
     loop();
   };
-  name.addEventListener('click', manual);
+  name.addEventListener('click', manual, scoped());
   name.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       manual();
     }
-  });
+  }, scoped());
   if (reducedMotion()) return;
   // Intro: arrive as the alias, resolve into the name.
   lines.forEach((l) => (l.textContent = l.dataset.b!));
@@ -204,8 +208,8 @@ function initPreview() {
     row.addEventListener('pointerenter', () => {
       img.src = row.dataset.preview!;
       gsap.to(fig, { opacity: 1, scale: 1, rotate: -3, duration: clock.beat / 2, ease: 'power3.out' });
-    });
-    row.addEventListener('pointerleave', () => gsap.to(fig, { opacity: 0, scale: 0.92, rotate: 0, duration: clock.beat / 4 }));
+    }, scoped());
+    row.addEventListener('pointerleave', () => gsap.to(fig, { opacity: 0, scale: 0.92, rotate: 0, duration: clock.beat / 4 }), scoped());
   });
   cleanups.push(() => window.removeEventListener('pointermove', move));
 }
@@ -302,20 +306,20 @@ function initCatalogue() {
     if (s.track?.day === Number(row.dataset.day) && s.playing) return pause();
     play({ src: row.dataset.src!, title: row.dataset.title!, bpm: Number(row.dataset.bpm), cover: row.dataset.cover, day: Number(row.dataset.day), remote: row.dataset.remote !== undefined });
   };
-  rows.forEach((r) => r.addEventListener('click', () => start(r)));
+  rows.forEach((r) => r.addEventListener('click', () => start(r), scoped()));
   cells.forEach((c) => c.addEventListener('click', () => {
     const row = byDay.get(c.dataset.day!)!;
     if (row.hidden) setFilter('all');
     start(row);
     lenis ? lenis.scrollTo(row, { offset: -innerHeight / 2 }) : row.scrollIntoView({ block: 'center' });
-  }));
+  }, scoped()));
   const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
   const setFilter = (f: string) => {
     chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === f)));
     rows.forEach((r) => (r.hidden = f !== 'all' && r.dataset.m !== f));
     ScrollTrigger.refresh();
   };
-  chips.forEach((c) => c.addEventListener('click', () => setFilter(c.dataset.filter!)));
+  chips.forEach((c) => c.addEventListener('click', () => setFilter(c.dataset.filter!), scoped()));
   const mark = () => {
     const s = state();
     const day = s.track?.day && !s.failed ? String(s.track.day) : '';
@@ -349,7 +353,7 @@ function initLanes() {
     await play(houseTrack());
     live = splitBands(true);
     status.textContent = live ? 'Playing. Tap a lane to miss it.' : 'Your browser blocked the audio graph, so the lanes are visual only.';
-  });
+  }, scoped());
   lanes.forEach((lane, i) => lane.addEventListener('click', () => {
     if (!state().playing) return void (status.textContent = 'Start the track first.');
     clearTimeout(timers[i]);
@@ -359,7 +363,7 @@ function initLanes() {
     lane.setAttribute('aria-pressed', 'true');
     status.textContent = `Missed. ${lane.querySelector('b')!.textContent} drops out for 3.5 seconds.`;
     timers[i] = window.setTimeout(() => restore(i), 3500);
-  }));
+  }, scoped()));
   const onChange = () => {
     const playing = state().playing;
     startBtn.textContent = playing && live ? 'Stop the track' : 'Start the track';
@@ -393,8 +397,8 @@ function initUtilities() {
       btn.textContent = btn.dataset.copy!;
     }
     setTimeout(() => (btn.textContent = label), 1800);
-  }));
-  qa<HTMLButtonElement>('[data-print]').forEach((btn) => btn.addEventListener('click', () => window.print()));
+  }, scoped()));
+  qa<HTMLButtonElement>('[data-print]').forEach((btn) => btn.addEventListener('click', () => window.print(), scoped()));
 }
 function initMeter() {
   const side = document.querySelector<HTMLElement>('[data-side]');
@@ -451,6 +455,8 @@ function unmount() {
   ScrollTrigger.getAll().forEach((t) => t.kill());
   cleanups.forEach((fn) => fn());
   cleanups = [];
+  life.abort();
+  life = new AbortController();
 }
 
 // With Astro's router, page-load fires on first load and after every swap.
