@@ -1,0 +1,57 @@
+---
+import catalogue from '../data/catalogue.json';
+
+interface Song { d: number; t: string; m: 'l' | 'd'; b: number | null; a: string; c: string }
+const songs = catalogue as Song[];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const date = (day: number) => new Date(Date.UTC(2026, 0, day));
+const byMonth = MONTHS.map((name, i) => ({ name, songs: songs.filter((s) => date(s.d).getUTCMonth() === i) }));
+const light = songs.filter((s) => s.m === 'l').length;
+const pad = (n: number) => String(n).padStart(3, '0');
+// Day 8 ships with the site; everything else streams from the 365 project's file host.
+const LOCAL: Record<number, { a: string; c: string }> = { 8: { a: '/media/poetry.mp3', c: '/media/cover-4.jpg' } };
+---
+<header class="cs-head">
+  <p class="label" data-tick>Side B / The Catalogue</p>
+  <h1 class="cs-title" data-write>365 songs, <em>one</em> year</h1>
+  <dl class="cs-meta" data-rise>
+    <div><dt class="label">Released</dt><dd>One a day, January 1 to December 31, 2026</dd></div>
+    <div><dt class="label">Light</dt><dd>{light} songs</dd></div>
+    <div><dt class="label">Dark</dt><dd>{songs.length - light} songs</dd></div>
+    <div><dt class="label">Written and produced by</dt><dd>th3scr1b3</dd></div>
+  </dl>
+</header>
+
+<section class="wrap" data-catalogue>
+  <p class="label">The year as a shape. Each square is a day. Pick one to play it.</p>
+  <div class="year" role="group" aria-label="All 365 days">
+    {songs.map((s) => <button type="button" data-day={s.d} data-m={s.m} aria-label={`Day ${s.d}: ${s.t}`} title={`${pad(s.d)} ${s.t}`}></button>)}
+  </div>
+  <div class="filters" role="group" aria-label="Filter by mood">
+    <button type="button" class="chip" data-filter="all" aria-pressed="true">All 365</button>
+    <button type="button" class="chip" data-filter="l" aria-pressed="false">Light {light}</button>
+    <button type="button" class="chip" data-filter="d" aria-pressed="false">Dark {songs.length - light}</button>
+  </div>
+
+  {byMonth.map((m) => (
+    <section>
+      <div class="month-head"><h2 class="label">{m.name}</h2><span class="label">{m.songs.length} songs</span></div>
+      <div class="songs">
+        {m.songs.map((s) => (
+          <button type="button" class="song" data-day={s.d} data-m={s.m} data-title={s.t} data-bpm={s.b ?? 90}
+            data-src={LOCAL[s.d]?.a ?? s.a} data-cover={LOCAL[s.d]?.c ?? s.c} data-remote={LOCAL[s.d] ? undefined : ''}>
+            <span class="num">{pad(s.d)}</span>
+            <span class="song-title">{s.t}</span>
+            <span class="num">{s.b ? `${s.b} BPM` : ''}</span>
+            <span class="mood">{s.m === 'l' ? 'Light' : 'Dark'}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  ))}
+</section>
+
+<a class="next" href="/resume" data-flood="#f2efe6" style="margin-top:clamp(60px,10vw,150px)">
+  <span class="label">Read the credits</span>
+  <span class="serif">Resume</span>
+</a>

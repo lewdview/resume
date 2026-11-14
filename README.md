@@ -1,6 +1,6 @@
 # work.th3scr1b3.art
 
-Portfolio for Bryan Meason (th3scr1b3). Concept: Liner Notes. Prototype 0.1 covers the home page and the 365 Days of Light and Dark case study.
+Portfolio for Bryan Meason (th3scr1b3). Concept: Liner Notes. Pages: home, two case studies (365 Days of Light and Dark, PIM : th3v4ult), Sound (the full catalogue), Resume and Contact.
 
 ## Run
 
@@ -14,13 +14,14 @@ npm run build:preview  # also writes preview-dist/, a single-file build of both 
 ## Layout
 
 - `src/layouts/Base.astro`: shell, nav, persistent audio, flood and needle overlays
-- `src/components/Home.astro`, `Case365.astro`: page content
-- `src/pages/`: `/`, `/work/365`, and `/preview` (both views in one document, noindex)
+- `src/components/`: page content (`Home`, `Case365`, `CasePim`, `Sound`, `Resume`, `Contact`)
+- `src/pages/`: one route per page, plus `/preview` (every view in one document, noindex)
+- `src/data/catalogue.json`: the 365 releases (day, title, mood, tempo, audio and cover URLs)
 - `src/styles/global.css`: tokens (paper, ink, signal) and all styles. `data-skin` on `<html>` switches palette
 - `src/scripts/`
   - `clock.ts`: the one tempo. Durations everywhere are multiples of `clock.beat`
   - `transcribe.ts`: glyph-by-glyph re-keying (the name, nav labels)
-  - `player.ts`: sound toggle, analyser, sets the clock to the track's BPM
+  - `player.ts`: the deck. Plays the bundled track through Web Audio (analyser, PIM lane bands) and streams catalogue tracks from files.th3scr1b3.art
   - `hero.ts`: raw WebGL ink-line field, reacts to pointer and audio
   - `app.ts`: Write, Scrub, Flood, Needle, and page lifecycle
 - `public/media/`: one track and six sleeves from the 365 project
@@ -30,4 +31,5 @@ npm run build:preview  # also writes preview-dist/, a single-file build of both 
 - Sound never starts without a click. Reduced-motion users get static states.
 - The hero uses raw WebGL instead of Three.js. One full-screen shader did not justify a 740 KB library.
 - Styling is plain CSS with tokens. Tailwind can be added when the remaining pages are built.
-- Sound, Resume and Contact are placeholders in the nav until step 4.
+- Catalogue audio and covers load from files.th3scr1b3.art. Only day 008 is bundled.
+- The Resume page has no scroll effects, works without JavaScript and prints to two pages.

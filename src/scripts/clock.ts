@@ -11,7 +11,7 @@ export const clock = {
   set(bpm: number) {
     this.bpm = bpm;
     document.documentElement.style.setProperty('--beat', `${this.beat}s`);
-    document.querySelectorAll<HTMLElement>('[data-bpm]').forEach((el) => (el.textContent = `${bpm} BPM`));
+    document.querySelectorAll<HTMLElement>('[data-bpm-readout]').forEach((el) => (el.textContent = `${bpm} BPM`));
     document.dispatchEvent(new CustomEvent('clock:change', { detail: { bpm } }));
   },
   reset() {

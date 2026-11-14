@@ -1,13 +1,21 @@
 ---
-// Single-document build of the prototype: both views in one page, switched in place.
+// Single-document build of the site: every view in one page, switched in place.
 // Used for the shareable preview, where multi-page navigation is not available.
 import Base from '../layouts/Base.astro';
 import Home from '../components/Home.astro';
 import Case365 from '../components/Case365.astro';
+import CasePim from '../components/CasePim.astro';
+import Sound from '../components/Sound.astro';
+import Resume from '../components/Resume.astro';
+import Contact from '../components/Contact.astro';
 ---
-<Base noindex title="Bryan Meason Portfolio" description="Prototype of the Liner Notes portfolio: home page and the 365 Days of Light and Dark case study.">
+<Base noindex title="Bryan Meason Portfolio" description="Preview of the Liner Notes portfolio for Bryan Meason, also known as th3scr1b3.">
   <Fragment slot="views">
-    <main data-view="home" data-skin="paper"><Home /></main>
-    <main data-view="case-365" data-skin="365" hidden><Case365 /></main>
+    <main data-view="home" data-path="/" data-skin="paper"><Home /></main>
+    <main data-view="case-365" data-path="/work/365" data-skin="365" hidden><Case365 /></main>
+    <main data-view="case-pim" data-path="/work/pim" data-skin="pim" hidden><CasePim /></main>
+    <main data-view="sound" data-path="/sound" data-skin="ink" hidden><Sound /></main>
+    <main data-view="resume" data-path="/resume" data-skin="paper" hidden><Resume /></main>
+    <main data-view="contact" data-path="/contact" data-skin="paper" hidden><Contact /></main>
   </Fragment>
 </Base>

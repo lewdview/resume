@@ -1,0 +1,24 @@
+---
+const socials = [
+  ['GitHub', 'https://github.com/lewdview'],
+  ['YouTube', 'https://youtube.com/@th3scr1b3'],
+  ['Instagram', 'https://instagram.com/th3scr1b3'],
+  ['TikTok', 'https://tiktok.com/@th3scr1b3'],
+  ['X', 'https://twitter.com/th3scr1b3'],
+  ['Audius', 'https://audius.co/th3scr1b3'],
+  ['365 Days', 'https://th3scr1b3.art'],
+  ['PIM', 'https://pim.th3scr1b3.art'],
+];
+---
+<section class="contact">
+  <p class="label" data-tick>Contact / Bookings, work and collaborations</p>
+  <p class="mail" data-write>work@<wbr />th3scr1b3.art</p>
+  <div class="demo-bar" style="margin-top:0">
+    <button type="button" class="chip" data-copy="work@th3scr1b3.art">Copy address</button>
+    <a class="chip" href="mailto:work@th3scr1b3.art">Open in mail</a>
+    <p class="label">Bryan Meason, Tucson, Arizona. Open to full-time roles, contracts and commissions.</p>
+  </div>
+  <nav class="socials" aria-label="Elsewhere" data-rise>
+    {socials.map(([name, href]) => <a href={href} target="_blank" rel="noopener">{name}</a>)}
+  </nav>
+</section>
