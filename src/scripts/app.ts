@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 import { navigate } from 'astro:transitions/client';
 import { clock, reducedMotion } from './clock';
 import { transcribe, initTranscribeHover } from './transcribe';
-import { initPlayer } from './player';
+import { initPlayer, play, pause, state, houseTrack, splitBands, setBand, level } from './player';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -18,7 +18,10 @@ const q = <T extends Element = HTMLElement>(sel: string) => scope.querySelector<
 
 /* ---------- Views: the single-document preview switches <main data-view> in place ---------- */
 const views = () => [...document.querySelectorAll<HTMLElement>('main[data-view]')];
-const viewFor = (url: URL) => (/\/work\/365(\.html)?\/?$/.test(url.pathname) ? 'case-365' : 'home');
+const viewFor = (url: URL) => {
+  const path = url.pathname.replace(/\.html$/, '').replace(/\/$/, '');
+  return views().find((v) => v.dataset.path !== '/' && path.endsWith(v.dataset.path!))?.dataset.view ?? 'home';
+};
 const currentView = () => views().find((v) => !v.hidden)?.dataset.view;
 function go(href: string) {
   if (!views().length) return void navigate(href);
@@ -287,6 +290,127 @@ function initMagnets() {
   });
 }
 
+/* ---------- Sound page: the catalogue ---------- */
+function initCatalogue() {
+  const root = q('[data-catalogue]');
+  if (!root) return;
+  const rows = [...root.querySelectorAll<HTMLButtonElement>('.song')];
+  const cells = [...root.querySelectorAll<HTMLButtonElement>('.year button')];
+  const byDay = new Map(rows.map((r) => [r.dataset.day!, r]));
+  const start = (row: HTMLButtonElement) => {
+    const s = state();
+    if (s.track?.day === Number(row.dataset.day) && s.playing) return pause();
+    play({ src: row.dataset.src!, title: row.dataset.title!, bpm: Number(row.dataset.bpm), cover: row.dataset.cover, day: Number(row.dataset.day), remote: row.dataset.remote !== undefined });
+  };
+  rows.forEach((r) => r.addEventListener('click', () => start(r)));
+  cells.forEach((c) => c.addEventListener('click', () => {
+    const row = byDay.get(c.dataset.day!)!;
+    if (row.hidden) setFilter('all');
+    start(row);
+    lenis ? lenis.scrollTo(row, { offset: -innerHeight / 2 }) : row.scrollIntoView({ block: 'center' });
+  }));
+  const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+  const setFilter = (f: string) => {
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === f)));
+    rows.forEach((r) => (r.hidden = f !== 'all' && r.dataset.m !== f));
+    ScrollTrigger.refresh();
+  };
+  chips.forEach((c) => c.addEventListener('click', () => setFilter(c.dataset.filter!)));
+  const mark = () => {
+    const s = state();
+    const day = s.track?.day && !s.failed ? String(s.track.day) : '';
+    rows.forEach((r) => r.classList.toggle('is-current', r.dataset.day === day));
+    cells.forEach((c) => c.classList.toggle('is-current', c.dataset.day === day));
+  };
+  document.addEventListener('player:change', mark);
+  mark();
+  cleanups.push(() => document.removeEventListener('player:change', mark));
+}
+
+/* ---------- PIM: miss a lane, lose that band ---------- */
+function initLanes() {
+  const root = q('[data-lanes]');
+  if (!root) return;
+  const lanes = [...root.querySelectorAll<HTMLButtonElement>('.lane')];
+  const startBtn = root.querySelector<HTMLButtonElement>('[data-lanes-start]')!;
+  const status = root.querySelector<HTMLElement>('[data-lanes-status]')!;
+  const timers: number[] = [];
+  let live = false;
+  const restore = (i: number) => {
+    setBand(i, true);
+    lanes[i].classList.remove('is-missed');
+    lanes[i].setAttribute('aria-pressed', 'false');
+  };
+  startBtn.addEventListener('click', async () => {
+    if (live) {
+      pause();
+      return;
+    }
+    await play(houseTrack());
+    live = splitBands(true);
+    status.textContent = live ? 'Playing. Tap a lane to miss it.' : 'Your browser blocked the audio graph, so the lanes are visual only.';
+  });
+  lanes.forEach((lane, i) => lane.addEventListener('click', () => {
+    if (!state().playing) return void (status.textContent = 'Start the track first.');
+    clearTimeout(timers[i]);
+    if (lane.classList.contains('is-missed')) return restore(i);
+    setBand(i, false);
+    lane.classList.add('is-missed');
+    lane.setAttribute('aria-pressed', 'true');
+    status.textContent = `Missed. ${lane.querySelector('b')!.textContent} drops out for 3.5 seconds.`;
+    timers[i] = window.setTimeout(() => restore(i), 3500);
+  }));
+  const onChange = () => {
+    const playing = state().playing;
+    startBtn.textContent = playing && live ? 'Stop the track' : 'Start the track';
+    if (!playing) live = false;
+  };
+  document.addEventListener('player:change', onChange);
+  let raf = 0;
+  const tick = () => {
+    const l = level();
+    lanes.forEach((lane, i) => lane.style.setProperty('--lvl', String(0.25 + Math.min(1, l * (1.6 - i * 0.3)) * 0.75)));
+    raf = requestAnimationFrame(tick);
+  };
+  if (!reducedMotion()) tick();
+  cleanups.push(() => {
+    cancelAnimationFrame(raf);
+    timers.forEach(clearTimeout);
+    document.removeEventListener('player:change', onChange);
+    lanes.forEach((_, i) => restore(i));
+    splitBands(false);
+  });
+}
+
+/* ---------- Small things ---------- */
+function initUtilities() {
+  qa<HTMLButtonElement>('[data-copy]').forEach((btn) => btn.addEventListener('click', async () => {
+    const label = btn.textContent;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy!);
+      btn.textContent = 'Copied';
+    } catch {
+      btn.textContent = btn.dataset.copy!;
+    }
+    setTimeout(() => (btn.textContent = label), 1800);
+  }));
+  qa<HTMLButtonElement>('[data-print]').forEach((btn) => btn.addEventListener('click', () => window.print()));
+}
+function initMeter() {
+  const side = document.querySelector<HTMLElement>('[data-side]');
+  const code = document.querySelector<HTMLElement>('[data-timecode]');
+  if (!side || !code) return;
+  side.textContent = document.documentElement.dataset.skin === 'ink' ? 'Side B' : 'Side A';
+  const update = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const secs = Math.round((max > 0 ? scrollY / max : 0) * 180); // a three-minute side
+    code.textContent = `${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`;
+  };
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+  cleanups.push(() => window.removeEventListener('scroll', update));
+}
+
 /* ---------- Lifecycle ---------- */
 let mounted = false;
 function mount(hash: string = location.hash) {
@@ -311,6 +435,10 @@ function mount(hash: string = location.hash) {
   initFlood();
   initPreview();
   initHeroField();
+  initCatalogue();
+  initLanes();
+  initUtilities();
+  initMeter();
   document.fonts.ready.then(() => {
     initWrite();
     initName();

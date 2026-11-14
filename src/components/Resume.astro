@@ -1,0 +1,107 @@
+---
+const works = [
+  { t: '365 Days of Light and Dark', d: 'A song a day for a year, and the site that holds them', href: '/work/365', flood: '#1a1c2e' },
+  { t: 'PIM : th3v4ult', d: 'Rhythm game and collectible card platform built on the catalogue', href: '/work/pim', flood: '#08080c' },
+  { t: 'Song Analyzer and 365 Poster', d: 'Audio analysis, transcription and lyric-video automation' },
+  { t: 'th3scr1b3 Base Mini App', d: 'The 365 experience packaged for Base and Farcaster' },
+];
+const ops = [
+  { role: 'Fulfillment Associate', org: 'Amazon', where: 'Phoenix, AZ', when: '2016 to 2018' },
+  { role: 'Franchise Restaurant Manager', org: "Cowgills McDonald's", where: 'Tucson, AZ', when: '2012 to 2017' },
+  { role: 'Restaurant Manager', org: 'Taco Cabana', where: 'Houston, TX', when: '2008 to 2012' },
+  { role: 'Server', org: 'Olive Garden', where: 'Tucson, AZ', when: '2006 to 2008' },
+  { role: 'Courtesy Clerk', org: 'Albertsons', where: 'Tucson, AZ', when: '1999 to 2001' },
+];
+---
+<article class="cv">
+  <div class="cv-top">
+    <div>
+      <p class="label">Credits / Resume</p>
+      <h1 class="cv-name">Bryan Meason</h1>
+    </div>
+    <div class="cv-links">
+      <p>Creative Technologist</p>
+      <p>Tucson, Arizona</p>
+      <p><a href="/contact" data-flood="#f2efe6">work@th3scr1b3.art</a></p>
+      <p class="no-print"><button type="button" class="link" data-print>Print or save as PDF</button></p>
+    </div>
+  </div>
+
+  <p class="cv-lede">Self-motivated creative technologist and independent builder. I design, write and ship software, websites, music and the tools that connect them, usually alone and end to end.</p>
+
+  <section class="cv-sec">
+    <h2 class="label">Side A / Independent work</h2>
+    <div>
+      <div class="role">
+        <h3>Independent Creative Technologist and Product Builder</h3>
+        <p class="when">Self-employed / Tucson, AZ / January 2018 to present</p>
+        <ul>
+          <li>Conceived and launched websites, software products and AI-driven tools, from idea through to production.</li>
+          <li>Designed and built full-stack applications with modern web technologies, APIs and automation platforms.</li>
+          <li>Created and managed a portfolio of independent digital products spanning software, music and branding.</li>
+          <li>Led multidisciplinary projects covering product strategy, UX and UI design, development and content.</li>
+        </ul>
+      </div>
+      <table class="cv-table">
+        <tbody>
+          {works.map((w) => (
+            <tr>
+              <td>{w.href ? <a class="link" href={w.href} data-flood={w.flood}>{w.t}</a> : w.t}</td>
+              <td>{w.d}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <h2 class="label">Early web</h2>
+    <div class="role">
+      <h3>Web Designer, Staytooned Software</h3>
+      <p class="when">Tucson, AZ / 2001 to 2005</p>
+      <ul>
+        <li>Built web-based multimedia projects for tourist CD-ROM postcards.</li>
+        <li>First professional work in programming, web development and interactive content.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <h2 class="label">Side B / Operations and leadership</h2>
+    <div>
+      <p style="max-width:68ch;margin-bottom:14px">Twelve years running high-volume operations: staffing, training, scheduling and inventory, and keeping teams performing under pressure.</p>
+      <table class="cv-table">
+        <tbody>
+          {ops.map((o) => (
+            <tr><td>{o.role}</td><td>{o.org}, {o.where}</td><td>{o.when}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <h2 class="label">Skills</h2>
+    <div>
+      <table class="cv-table">
+        <tbody>
+          <tr><td>Build</td><td>Software and web development, AI-assisted development, automation, React, TypeScript, Three.js, Supabase</td></tr>
+          <tr><td>Make</td><td>Product and UX design, music production, digital media, branding</td></tr>
+          <tr><td>Lead</td><td>Team leadership and training, operations management, workflow optimization, scheduling and staffing</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <h2 class="label">Education</h2>
+    <div class="role">
+      <h3>Canyon Del Oro High School</h3>
+      <p class="when">Tucson, AZ / Diploma, 2000 / GPA 3.8</p>
+      <ul>
+        <li>National Honor Society. Advanced Placement Calculus and Physics.</li>
+      </ul>
+    </div>
+  </section>
+</article>

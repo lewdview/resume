@@ -5,11 +5,13 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
-  theme?: 'paper' | '365';
+  theme?: 'paper' | '365' | 'pim' | 'ink';
   noindex?: boolean;
 }
 const { title, description, theme = 'paper', noindex = false } = Astro.props;
 const PAPER = '#f2efe6';
+const INK = '#111111';
+const themeColor = { paper: PAPER, '365': '#1a1c2e', pim: '#08080c', ink: INK }[theme];
 ---
 <!doctype html>
 <html lang="en" data-skin={theme} transition:animate="none">
@@ -19,7 +21,7 @@ const PAPER = '#f2efe6';
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
-    <meta name="theme-color" content={theme === 'paper' ? PAPER : '#1a1c2e'} />
+    <meta name="theme-color" content={themeColor} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -32,13 +34,13 @@ const PAPER = '#f2efe6';
       <a href="/" data-flood={PAPER} data-magnet>Bryan Meason</a>
       <nav class="nav-links" aria-label="Primary">
         <a href="/#work" data-flood={PAPER}><span data-tx="W0RK">Work</span></a>
-        <span class="hide-s" aria-disabled="true" title="Coming in the full build">Sound</span>
-        <span class="hide-s" aria-disabled="true" title="Coming in the full build">Resume</span>
-        <span class="hide-s" aria-disabled="true" title="Coming in the full build">Contact</span>
+        <a href="/sound" data-flood={INK}><span data-tx="S0UND">Sound</span></a>
+        <a href="/resume" data-flood={PAPER}><span data-tx="R3SUM3">Resume</span></a>
+        <a href="/contact" data-flood={PAPER} class="hide-s"><span data-tx="C0NT4CT">Contact</span></a>
       </nav>
       <div class="nav-right">
         <span class="bpm" title="The site's tempo. Every animation runs on this clock.">
-          <i class="bpm-dot" aria-hidden="true"></i><span class="bpm-text" data-bpm>90 BPM</span>
+          <i class="bpm-dot" aria-hidden="true"></i><span class="bpm-text" data-bpm-readout>90 BPM</span>
         </span>
         <button id="sound" class="sound-btn" aria-pressed="false" data-magnet>
           <span data-sound-label>Sound off</span>
@@ -59,18 +61,29 @@ const PAPER = '#f2efe6';
       </div>
       <div>
         <p class="label">Contact</p>
-        <p><a href="mailto:work@th3scr1b3.art">work@th3scr1b3.art</a></p>
+        <p><a href="/contact" data-flood={PAPER}>work@th3scr1b3.art</a></p>
         <p>Tucson, Arizona</p>
       </div>
       <div>
         <p class="label">Pressing</p>
-        <p>Prototype 0.1. Home and one case study.</p>
-        <p data-now="Sound is off. Nothing plays without a click.">Sound is off. Nothing plays without a click.</p>
+        <p>First pressing, 2026.</p>
+        <p>Nothing plays without a click.</p>
       </div>
     </footer>
 
     <audio id="track" transition:persist="track" preload="none" loop
-      data-src="/media/poetry.mp3" data-bpm="91" data-title="Poetry, day 008 of 365"></audio>
+      data-src="/media/poetry.mp3" data-bpm="91" data-title="Poetry" data-day="8" data-cover="/media/cover-4.jpg"></audio>
+
+    <aside id="deck" class="deck" transition:persist="deck" aria-label="Now playing" hidden>
+      <button type="button" class="deck-disc" aria-label="Pause"><span class="deck-label"></span></button>
+      <div class="deck-info">
+        <p class="deck-title" data-deck-title></p>
+        <p class="label" data-deck-meta></p>
+        <div class="deck-bar" aria-hidden="true"><i data-deck-bar></i></div>
+      </div>
+    </aside>
+    <div class="side-meter label" transition:persist="meter" aria-hidden="true"><span data-side>Side A</span><span data-timecode>00:00</span></div>
+    <div class="grain" aria-hidden="true"></div>
     <div id="flood" transition:persist="flood" aria-hidden="true"></div>
     <div id="needle" transition:persist="needle" aria-hidden="true"><b></b><i></i></div>
 

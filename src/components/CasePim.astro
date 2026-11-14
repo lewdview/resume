@@ -1,0 +1,98 @@
+---
+const shots = [
+  { src: '/media/pim/landing-page.jpg', cap: 'The vault', note: "Today's drop, the collection and the pack shop" },
+  { src: '/media/pim/song-select-wheel.jpg', cap: 'Song select', note: 'Every day of the year is a level' },
+  { src: '/media/pim/pack-reveal.jpg', cap: 'Packs', note: 'A daily free pack, with rarer ones to earn' },
+  { src: '/media/pim/card-forge.jpg', cap: 'The forge', note: 'Burn duplicates, upgrade rarity' },
+];
+const built = [
+  { h: 'A rhythm engine on canvas', p: 'Notes travel down a three-lane perspective highway drawn on HTML5 canvas. Taps, holds, swipes, slides, mines and a signature remix note that isolates stems when you hit it perfectly.' },
+  { h: 'Timing that tightens', p: 'The PERFECT+ window starts at 60 milliseconds and narrows with every difficulty level, down to a floor of 24.' },
+  { h: 'Flow states', p: 'Combos of 20, 40 and 60 trigger FEVER, SURGE and SIGNAL LOCK, each with its own multiplier and colour. Three misses rewind the song 2.5 seconds and scroll the highway backwards.' },
+  { h: 'A server that keeps the score', p: 'Packs, burns, upgrades and supply caps all run in Supabase edge functions, so the client can never mint a card on its own.' },
+  { h: 'One codebase, four surfaces', p: 'The same React app ships to the web, a Base mini app, a Playgama web-game build and a desktop app through Tauri, with a Discord bot alongside.' },
+  { h: 'Ownership, staged honestly', p: 'Players sign in with a Base wallet and collections live in the vault today. The smart contract is written and hardened but not deployed yet.' },
+];
+---
+<header class="cs-head">
+  <p class="label" data-tick>Side A / Track 2 / Case study</p>
+  <h1 class="cs-title" data-write>PIM : <em>th3v4ult</em></h1>
+  <dl class="cs-meta" data-rise>
+    <div><dt class="label">Role</dt><dd>Game designer, engine and full-stack developer, brand</dd></div>
+    <div><dt class="label">Year</dt><dd>2026</dd></div>
+    <div><dt class="label">Stack</dt><dd>React 19, HTML5 Canvas, Web Audio, Supabase, Tauri 2, Base</dd></div>
+    <div><dt class="label">Live</dt><dd><a href="https://pim.th3scr1b3.art" target="_blank" rel="noopener">pim.th3scr1b3.art</a></dd></div>
+  </dl>
+</header>
+
+<section class="section note">
+  <p class="label" data-tick>The thesis</p>
+  <p class="note-body" data-write>Music unlocks gameplay. Gameplay unlocks ownership. Ownership unlocks <span class="mark">status</span>.</p>
+</section>
+
+<section class="wrap">
+  <div class="stats">
+    <div class="stat"><p class="stat-n" data-count="365">365</p><p class="label">Playable levels</p></div>
+    <div class="stat"><p class="stat-n" data-count="3">3</p><p class="label">Lanes: bass, mids, treble</p></div>
+    <div class="stat"><p class="stat-n" data-count="5">5</p><p class="label">Card rarities</p></div>
+    <div class="stat"><p class="stat-n" data-count="24">24</p><p class="label">Millisecond floor for a perfect hit</p></div>
+  </div>
+</section>
+
+<section class="section" data-lanes>
+  <div class="section-head">
+    <p class="label">Try it</p>
+    <p class="label">The signature mechanic</p>
+  </div>
+  <div class="note" style="margin-top:28px">
+    <p class="label">Miss a lane, lose that part of the song</p>
+    <p class="note-body" style="font-size:clamp(26px,3.4vw,54px)" data-write>The track is split into three bands. Each lane owns one. Miss a note and its band drops out of the mix until you earn it back.</p>
+  </div>
+  <div class="lanes">
+    <button type="button" class="lane" data-lane="0" style="--lane:#a855f7" aria-pressed="false"><span class="label">Lane 0</span><b>Bass</b><span class="label">Below 300 Hz</span></button>
+    <button type="button" class="lane" data-lane="1" style="--lane:#00e5ff" aria-pressed="false"><span class="label">Lane 1</span><b>Mids</b><span class="label">Around 1.2 kHz</span></button>
+    <button type="button" class="lane" data-lane="2" style="--lane:#39ff14" aria-pressed="false"><span class="label">Lane 2</span><b>Treble</b><span class="label">Above 3.2 kHz</span></button>
+  </div>
+  <div class="demo-bar">
+    <button type="button" class="btn" data-lanes-start>Start the track</button>
+    <p class="label" data-lanes-status>Start the track, then tap a lane to miss it. It comes back after 3.5 seconds, as it does in the game.</p>
+  </div>
+</section>
+
+<section class="crate" aria-label="Screens from the game">
+  <div class="crate-track">
+    <div class="crate-intro">
+      <p class="label">The screens</p>
+      <h2>A vault, an arcade and an economy.</h2>
+      <p>Four screens from the live build. Keep scrolling.</p>
+    </div>
+    {shots.map((s) => (
+      <figure class="shot sleeve">
+        <img src={s.src} alt={`PIM screen: ${s.cap}. ${s.note}`} loading="lazy" width="1600" height="900" />
+        <figcaption><span>{s.cap}</span><span>{s.note}</span></figcaption>
+      </figure>
+    ))}
+  </div>
+  <div class="crate-bar" aria-hidden="true"><i></i></div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <p class="label">What I built</p>
+    <p class="label">Six parts</p>
+  </div>
+  <ol class="built">
+    {built.map((b, i) => (
+      <li>
+        <span class="no label">0{i + 1}</span>
+        <h3 data-write>{b.h}</h3>
+        <p>{b.p}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<a class="next" href="/sound" data-flood="#111111">
+  <span class="label">Flip the record / Side B</span>
+  <span class="serif">The Catalogue</span>
+</a>

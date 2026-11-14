@@ -1,10 +1,11 @@
 ---
 const tracks = [
   { no: 'A1', title: '365 Days of Light and Dark', role: 'Music, design, front end, data', state: 'Read the notes', href: '/work/365', flood: '#1a1c2e', preview: '/media/cover-4.jpg' },
-  { no: 'A2', title: 'PIM : th3v4ult', role: 'Game design, rhythm engine, backend', state: 'Notes in press' },
+  { no: 'A2', title: 'PIM : th3v4ult', role: 'Game design, rhythm engine, backend', state: 'Read the notes', href: '/work/pim', flood: '#08080c', preview: '/media/pim/landing-page.jpg' },
   { no: 'A3', title: 'The Pipeline', role: 'Audio analysis, lyric video automation', state: 'Notes in press' },
-  { no: 'B1', title: 'The Catalogue', role: '365 daily releases and their sleeves', state: 'Notes in press' },
+  { no: 'B1', title: 'The Catalogue', role: '365 daily releases and their sleeves', state: 'Flip to side B', href: '/sound', flood: '#111111', preview: '/media/cover-5.jpg' },
 ];
+const liner = ['Songwriter', 'Front-end developer', 'Producer', 'Game designer', 'Creative technologist', 'Systems builder'];
 ---
 <section class="hero">
   <div class="hero-fallback" aria-hidden="true"></div>
@@ -30,6 +31,12 @@ const tracks = [
     <p class="hero-cue label">Scroll for side A. Turn the sound on to set the tempo.</p>
   </div>
 </section>
+
+<div class="marquee" aria-hidden="true">
+  {[0, 1, 2].map(() => (
+    <div class="marquee-run">{liner.map((w) => <span>{w}</span>)}</div>
+  ))}
+</div>
 
 <section class="section note">
   <p class="label" data-tick>Note 01</p>
