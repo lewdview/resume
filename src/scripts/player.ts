@@ -98,8 +98,11 @@ function sync() {
   emit();
 }
 
+let request = 0;
 export async function play(track: Track) {
   if (!local) return;
+  // A newer play() interrupts this one's promise; only the latest request may report failure.
+  const mine = ++request;
   failed = false;
   const el = track.remote ? (remote ??= wire(new Audio())) : local;
   if (active && active !== el) active.pause();
@@ -116,6 +119,7 @@ export async function play(track: Track) {
   try {
     await el.play();
   } catch {
+    if (mine !== request) return;
     failed = true;
     sync();
   }
